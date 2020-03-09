@@ -55,12 +55,9 @@ module dicClockFsm (
     reg  cState;
     reg  nState;
 
-    // adding set T and A states
-    reg [1:0] setT_cState;
-    reg [1:0] setT_nStates;
-
-    reg [1:0] setA_cState;
-    reg [1:0] setA_nState;
+    // adding set T and A states, combined because they cannot be simultaneously set
+    reg [1:0] setTA_cState;
+    reg [1:0] setTA_nState;
 
     // only 2 states:
     //  RUN: dicRun = 1;  dicDspMtens = 1; dicDspMones = 1; dicDspStens = 1; dicDspSones= 1;
@@ -68,37 +65,83 @@ module dicClockFsm (
     localparam
     STOP    =1'b0, 
     RUN     =1'b1;
+    OFF	    =1'b0;
+    ON	    =1'b1;
 
-    // adding local params for T and A states
-    TMTENS = 2'b00;
-    TMONES = 2'b01;
-    TSTENS = 2'b10;
-    TSONES = 2'b11;
-    AMTENS = 2'b00;
-    AMONES = 2'b01;
-    ASTENS = 2'b10;
-    ASONES = 2'b11;   
+    // adding local params for loading T and A states
+    MTENS = 2'b00;
+    MONES = 2'b01;
+    STENS = 2'b10;
+    SONES = 2'b11;   
    
     //
     // state machine next state
     //
     //FSM.1 add code to set nState to STOP or RUN
-    //      if det_S -- nState = RUN
+    //      if det_S -- nState = RUN, ld_alarm and ld_time = 0
     //      if det_cr -- nState = STOP
-    //
-    //      if det_
+    //	    if det_atSign -- trigger alarm_ena
+    //      if det_L -- load time state on
+    //	    if det_A -- load alarm state on
+    //	    if setting alarm or time, set ld
     //      5% of points assigned to lab3
     always @(*) begin
-        if (rst) // if reset, next state is STOP
+        if (rst) begin // if reset, next state is STOP, alarm is off, loads are off
 	        nState = STOP;
-        else begin
+		alarm_ena = OFF;
+		ld_alarm = OFF;
+		ld_time = OFF;
+	end else begin
+	if (det_atSign) // trigger alarm
+		alarm_ena = (alarm_ena)? OFF: ON;
+
+	// other triggers
+	if (ld_time | ld_alarm) begin // loading time or loading alarm triggered
+		case (setTA_cState) // increment count and set ld if valid num
+		   MTENS: begin
+			dicLdMtens = (det_num0to5)? ON: OFF; 
+			dicLdMones = OFF; 
+			dicLdStens = OFF; 
+			dicLdSones = OFF;
+			setTA_nState = MONES;
+		   end
+		   MONES: begin
+			dicLdMtens = OFF; 
+			dicLdMones = (det_num)? ON: OFF; 
+			dicLdStens = OFF; 
+			dicLdSones = OFF;
+			setTA_nState = STENS;
+		   end
+		   STENS: begin
+			dicLdMtens = OFF; 
+			dicLdMones = OFF; 
+			dicLdStens = (det_num0to5)? ON: OFF; 
+			dicLdSones = OFF;
+			setTA_nState = SONES;
+		   end
+		   SONES: begin
+			dicLdMtens = OFF;
+			dicLdMones = OFF; 
+			dicLdStens = OFF; 
+			dicLdSones = (det_num)? ON: OFF;
+			setTA_nState = MTENS;
+		   end
+		endcase
+	end else if (det_L) begin // set ld_time
+		ld_time = ON;
+		ld_alarm = OFF;
+		setTA_nState = MTENS;
+	end else if (det_A) begin // set ld_alarm
+		ld_alarm = ON;
+		ld_time = OFF;
+		setTA_nState = MTENS;
+	end else begin
         	case (cState) // if running and CR, then stop. if stopped and S/s, then run.
 	           RUN: nState = (det_cr) ? STOP : RUN;
 		   STOP: nState = (det_S) ? RUN : STOP;
 		endcase
 	end
-
-	if (
+	end
     end
 
     //
@@ -133,6 +176,7 @@ module dicClockFsm (
 
    always @(posedge clk) begin
       cState <= nState;
+      setTA_cState <= setTA_nState;
    end
    
 endmodule
