@@ -51,6 +51,7 @@ module dictrl(
     wire   det_cr;
     wire   det_S;
    
+    // added outputs for momre states
     decodeKeys dek ( 
         .det_num(det_num),
         .det_num0to5(det_num0to5),
@@ -63,12 +64,17 @@ module dictrl(
 	.charData(rx_data),      .charDataValid(rx_data_rdy)
     );
 
-    
+    // added inputs for more states
     dicClockFsm dicfsm (
             .dicRun(dicRun),
             .dicDspMtens(dicDspMtens), .dicDspMones(dicDspMones),
             .dicDspStens(dicDspStens), .dicDspSones(dicDspSones),
+            .det_num(det_num),
+            .det_num0to5(det_num0to5),
             .det_cr(det_cr),
+            .det_atSign(det_atSign),
+            .det_A(det_A),
+            .det_L(det_L),
             .det_S(det_S), 
             .rst(rst),
             .clk(clk)
