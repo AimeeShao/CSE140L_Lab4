@@ -185,6 +185,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 0;
 		dicLdSones = 0;
+		ld_time = 1;
+		ld_alarm = 0;
 	    end
 	    LT_1M: begin 
 		dicDspMtens = 1;
@@ -195,6 +197,8 @@ module dicClockFsm (
 		dicLdMones = 1;
 		dicLdStens = 0;
 		dicLdSones = 0;
+		ld_time = 1;
+		ld_alarm = 0;
 	    end
 	    LT_10S: begin
 		dicDspMtens = 1;
@@ -205,6 +209,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 1;
 		dicLdSones = 0;
+		ld_time = 1;
+		ld_alarm = 0;
 	    end
 	    LT_1S: begin
 		dicDspMtens = 1;
@@ -215,6 +221,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 0;
 		dicLdSones = 1;
+		ld_time = 1;
+		ld_alarm = 0;
 	    end
 
 	    // load alarm, affects alarm display
@@ -227,6 +235,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 0;
 		dicLdSones = 0;
+		ld_time = 0;
+		ld_alarm = 1;
 	    end
 	    LA_1M: begin 
 		alarmDspMtens = 1;
@@ -237,6 +247,8 @@ module dicClockFsm (
 		dicLdMones = 1;
 		dicLdStens = 0;
 		dicLdSones = 0;
+		ld_time = 0;
+		ld_alarm = 1;
 	    end
 	    LA_10S: begin
 		alarmDspMtens = 1;
@@ -247,6 +259,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 1;
 		dicLdSones = 0;
+		ld_time = 0;
+		ld_alarm = 1;
 	    end
 	    LA_1S: begin
 		alarmDspMtens = 1;
@@ -257,6 +271,8 @@ module dicClockFsm (
 		dicLdMones = 0;
 		dicLdStens = 0;
 		dicLdSones = 1;
+		ld_time = 0;
+		ld_alarm = 1;
 	    end
 
 	    WAIT: begin
