@@ -63,10 +63,10 @@ module didp (
  
     //(dp.4) add code to set sTensDin, mOnesDin, mTensDin
     //   0% of points assigned to Lab3, used in Lab4
-    wire [3:0] sOnesDin = (ldSones & valid_num) ? ld_num : 4'b0;
-    wire [3:0] sTensDin = (ldStens & valid_num) ? ld_num : 4'b0;
-    wire [3:0] mOnesDin = (ldMones & valid_num) ? ld_num : 4'b0;
-    wire [3:0] mTensDin = (ldMtens & valid_num) ? ld_num : 4'b0;
+    wire [3:0] sOnesDin = (ldSones) ? (valid_num) ? ld_num : di_iSones : 4'b0;
+    wire [3:0] sTensDin = (ldStens) ? (valid_num) ? ld_num : di_iStens : 4'b0;
+    wire [3:0] mOnesDin = (ldMones) ? (valid_num) ? ld_num : di_iMones : 4'b0;
+    wire [3:0] mTensDin = (ldMtens) ? (valid_num) ? ld_num : di_iMtens : 4'b0;
    		
     //(dp.5) add code to generate digital clock output: di_iStens, di_iMones di_iMtens 
     //   20% of points assigned to Lab3
