@@ -85,17 +85,17 @@ module dicClockFsm (
     //  ~alarm_ena: if RUN or STOP: alarmDspMtens = 0; alarmDspMones = 0; alarmDspStens = 0; alarmDspSones= 0;
 
     localparam
-    STOP    =4'b0, 
-    RUN     =4'b1,
-    LT_10M = 4'b2,
-    LT_1M = 4'b3,
-    LT_10S = 4'b4,
-    LT_1S = 4'b5,   
-    LT_10M = 4'b6,
-    LT_1M = 4'b7,
-    LT_10S = 4'b8,
-    LT_1S = 4'b9,
-    WAIT = 4'b10,
+    STOP    =4'd0, 
+    RUN     =4'd1,
+    LT_10M = 4'd2,
+    LT_1M = 4'd3,
+    LT_10S = 4'd4,
+    LT_1S = 4'd5,   
+    LA_10M = 4'd6,
+    LA_1M = 4'd7,
+    LA_10S = 4'd8,
+    LA_1S = 4'd9,
+    WAIT = 4'd10,
 
     // OFF and ON for alarm_ena
     OFF = 1'b0,
@@ -135,8 +135,9 @@ module dicClockFsm (
 		LA_1M: nState = (det_num) ? LA_10S : LA_1M;
 		LA_10S: nState = (det_num0to5) ? LA_1S : LA_10S;
 		LA_1S: nState = (det_num) ? WAIT : LA_1S;
-		WAIT: nState = (det_S) ? RUN : (det_CR) ? STOP : WAIT;
+		WAIT: nState = (det_S) ? RUN : (det_cr) ? STOP : WAIT;
 	   endcase
+	end
     end
 
     //
