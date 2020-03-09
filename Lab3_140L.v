@@ -80,11 +80,15 @@ module Lab3_140L (
         );
 
     wire dicSelectLEDdisp, dicRun;
+    wire alarm_ena, ld_time, ld_alarm;
     wire dicDspMtens, dicDspMones, dicDspStens, dicDspSones; //1:display, 0: don't display
     wire dicLdMtens, dicLdMones, dicLdStens, dicLdSones;     //1:load clk digit, 0: don't load
     dictrl dictrluu0(
         .dicSelectLEDdisp(dicSelectLEDdisp),
 	    .dicRun(dicRun),             // clock should run
+	    .alarm_ena(alarm_ena),	 // alarm should be on
+	    .ld_time(ld_time),		 // loading time
+	    .ld_alarm(ld_alarm),	 // loading alarm
 	    .dicDspMtens(dicDspMtens),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspMones(dicDspMones),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspStens(dicDspStens),   // 1: update 7 segment; 0: freeze 7 segment display
@@ -121,11 +125,13 @@ module Lab3_140L (
         .o_oneSecPluse(oneSecPluse),
         .L3_led(L3_led),
 		
-		//loading clock
-        .ldMtens(dicLdMtens), // set to 0 in lab3
-        .ldMones(dicLdMones), // set to 0 in lab3
-        .ldStens(dicLdStens), // set to 0 in lab3
-        .ldSones(dicLdSones), // set to 0 in lab3
+		//loading clock or alarm
+	.ld_time(ld_time);
+	.ld_alarm(ld_alarm);
+        .ldMtens(dicLdMtens),
+        .ldMones(dicLdMones),
+        .ldStens(dicLdStens),
+        .ldSones(dicLdSones),
 	    .ld_num(rx_data[3:0]), 
 		
         .dicSelectLEDdisp(dicSelectLEDdisp),		

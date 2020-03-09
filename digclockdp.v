@@ -5,20 +5,23 @@ module didp (
 	    output [3:0] di_iStens,  // current 10's second
 	    output [3:0] di_iSones,  // current 1's second
 
-	    output [3:0] alarm_10m,  // current alarms 10's minutes
-	    output [3:0] alarm_1m,  // current alarms 1's minutes
-	    output [3:0] alarm_10s,  // current alarms 10's second
-	    output [3:0] alarm_1s,  // current alarms 1's second
+	    output reg [3:0] alarm_10m,  // current alarms 10's minutes
+	    output reg [3:0] alarm_1m,  // current alarms 1's minutes
+	    output reg [3:0] alarm_10s,  // current alarms 10's second
+	    output reg [3:0] alarm_1s,  // current alarms 1's second
 
             output       o_oneSecPluse,
             output [4:0] L3_led,     // LED Output
 
-		//loading clock
+		//loading clock or alarm
+	    input	 ld_time,
+	    input	 ld_alarm,
             input        ldMtens,
             input        ldMones,
             input        ldStens,
             input        ldSones,
 	    input [3:0]  ld_num,
+
 
             input        dicSelectLEDdisp,
 	    input 	     dicRun,      // 1: clock should run, 0: clock freeze	
@@ -65,19 +68,38 @@ module didp (
    		
     //(dp.5) add code to generate digital clock output: di_iStens, di_iMones di_iMtens 
     //   20% of points assigned to Lab3
+    // Added ld_time for .ld and .ce
     countrce didpsones (.q(di_iSones),          .d(sOnesDin), 
-                        .ld(rollSones|ldSones), .ce(countEnSones|ldSones), 
+                        .ld(rollSones|(ld_time & ldSones)),
+			.ce(countEnSones|(ld_time & ldSones)), 
                         .rst(rst),              .clk(clk));
     countrce didpstens (.q(di_iStens),          .d(sTensDin), 
-                        .ld(rollStens|ldStens), .ce(countEnStens|ldStens), 
+                        .ld(rollStens|(ld_time & ldStens)), 
+			.ce(countEnStens|(ld_time & ldStens)), 
                         .rst(rst),              .clk(clk));
     countrce didpmones (.q(di_iMones),          .d(mOnesDin), 
-                        .ld(rollMones|ldSones), .ce(countEnMones|ldSones), 
+                        .ld(rollMones|(ld_time & ldMones)),
+			.ce(countEnMones|(ld_time & ldMones)), 
                         .rst(rst),              .clk(clk));
     countrce didpmtens (.q(di_iMtens),          .d(mTensDin), 
-                        .ld(rollMtens|ldSones), .ce(countEnMtens|ldSones), 
+                        .ld(rollMtens|(ld_time & ldMtens)),
+			.ce(countEnMtens|(ld_time & ldMtens)), 
                         .rst(rst),              .clk(clk));
 
+    // load alarm. reset -> all = 0, else depends on load
+    always @(*) begin
+	if (rst) begin
+	   alarm_10m = 4'b0;
+	   alarm_1m = 4'b0;
+	   alarm_10s = 4'b0;
+	   alarm_1s = 4'b0;
+	end else begin
+	   alarm_10m = (ld_alarm & ldMtens)? ld_num: alarm_10m;
+	   alarm_1m = (ld_alarm & ldMones)? ld_num: alarm_1m;
+	   alarm_10s = (ld_alarm & ldStens)? ld_num: alarm_10s;
+	   alarm_1s = (ld_alarm & ldSones)? ld_num: alarm_1s;
+	end
+    end
 
     ledDisplay ledDisp00 (
         .L3_led(L3_led),
