@@ -52,7 +52,12 @@ module dictrl(
     wire   det_S;
    
     decodeKeys dek ( 
+        .det_num(det_num),
+        .det_num0to5(det_num0to5),
         .det_cr(det_cr),
+        .det_atSign(det_atSign),
+        .det_A(det_A),
+        .det_L(det_L),
 	.det_S(det_S),             
         .det_N(dicSelectLEDdisp),
 	.charData(rx_data),      .charDataValid(rx_data_rdy)
