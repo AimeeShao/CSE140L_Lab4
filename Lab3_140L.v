@@ -84,6 +84,10 @@ module Lab3_140L (
     wire dicDspMtens, dicDspMones, dicDspStens, dicDspSones; //1:display, 0: don't display
     wire dicLdMtens, dicLdMones, dicLdStens, dicLdSones;     //1:load clk digit, 0: don't load
     wire alarmDspMtens, alarmDspMones, alarmDspStens, alarmDspSones; //1:display, 0: don't display
+    wire [3:0] alarm_10m;
+    wire [3:0] alarm_1m;
+    wire [3:0] alarm_10s;
+    wire [3:0] alarm_1s;
 
     dictrl dictrluu0(
         .dicSelectLEDdisp(dicSelectLEDdisp),
@@ -157,11 +161,11 @@ module Lab3_140L (
     bcd2segment dec2 (.segment(L3_segment3), .num(di_Mones), .enable(dicDspMones));
     bcd2segment dec3 (.segment(L3_segment4), .num(di_Mtens), .enable(dicDspMtens));
 
-    wire [7:0] b1 = (alarm_ena | alarmDspMtens)? {4'b0011, alarm_10m} : "-";
-    wire [7:0] b2 = (alarm_ena | alarmDspMones)? {4'b0011, alarm_1m} : "-";
-    wire [7:0] b3 = (alarm_ena | alarmDspMones)? ":": "-";
-    wire [7:0] b4 = (alarm_ena | alarmDspStens)? {4'b0011, alarm_10s} : "-";
-    wire [7:0] b5 = (alarm_ena | alarmDspSones)? {4'b0011, alarm_1s} : "-";
+    wire [7:0] b1 = (alarm_ena & alarmDspMtens)? {4'b0011, alarm_10m} : "-";
+    wire [7:0] b2 = (alarm_ena & alarmDspMones)? {4'b0011, alarm_1m} : "-";
+    wire [7:0] b3 = (alarm_ena & alarmDspMones)? ":": "-";
+    wire [7:0] b4 = (alarm_ena & alarmDspStens)? {4'b0011, alarm_10s} : "-";
+    wire [7:0] b5 = (alarm_ena & alarmDspSones)? {4'b0011, alarm_1s} : "-";
     wire [7:0] b6 = (trig)? "T": (alarm_ena)? "@" : "-";
 
     assign trig = (alarm_ena) & ~|(alarm_10m ^ di_Mtens) & ~|(alarm_1m ^ di_Mones) & ~|(alarm_10s ^ di_Stens) & ~|(alarm_1s ^ di_Sones);
