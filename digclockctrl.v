@@ -74,10 +74,16 @@ module dictrl(
 	    .alarm_ena(alarm_ena),
 	    .ld_time(ld_time),
 	    .ld_alarm(ld_alarm),
+
             .dicDspMtens(dicDspMtens), .dicDspMones(dicDspMones),
             .dicDspStens(dicDspStens), .dicDspSones(dicDspSones),
+
+            .alarmDspMtens(alarmDspMtens), .alarmDspMones(alarmDspMones),
+            .alarmDspStens(alarmDspStens), .alarmDspSones(alarmDspSones),
+
 	    .dicLdMtens(dicLdMtens), .dicLdMones(dicLdMones),
 	    .dicLdStens(dicLdStens), .dicLdSones(dicLdSones),
+
 	    .det_num(det_num),
             .det_num0to5(det_num0to5),
             .det_cr(det_cr),
