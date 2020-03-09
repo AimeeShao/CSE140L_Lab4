@@ -122,6 +122,12 @@ module Lab3_140L (
    assign dicLdStens = ld_Stens & rx_data_rdy;
    assign dicLdSones = ld_Sones & rx_data_rdy;
 
+    // set trig
+    assign trig = (alarm_ena) ? 
+		     (trig) ? trig : 
+		     ~|(alarm_10m ^ di_Mtens) & ~|(alarm_1m ^ di_Mones) & ~|(alarm_10s ^ di_Stens) & ~|(alarm_1s ^ di_Sones) : 
+		  1'b0;
+
    didp didpuu0(
         // output
 	    .di_iMtens(di_Mtens), // current 10's minutes
@@ -147,6 +153,9 @@ module Lab3_140L (
         .ldSones(dicLdSones),
 	    .ld_num(rx_data[3:0]), 
 		
+		// load trig
+	.trig(trig),
+
         .dicSelectLEDdisp(dicSelectLEDdisp),		
 	    .dicRun(dicRun),                // 1: clock runs, 0: clock freeze 
         .i_oneSecPluse(l_oneSecPluse),	// 0.5 sec on, 0.5sec off
@@ -155,11 +164,17 @@ module Lab3_140L (
 	    .clk(clk) 	  
 	);
 
+    // set clock displays according to trig
+    assign dspSones = (trig) ? l_oneSecPluse & dicDspSones : dicDspSones;
+    assign dspStens = (trig) ? l_oneSecPluse & dicDspStens : dicDspStens;
+    assign dspMones = (trig) ? l_oneSecPluse & dicDspMones : dicDspMones;
+    assign dspMtens = (trig) ? l_oneSecPluse & dicDspMtens : dicDspMtens;
+
     // convert to the presentation of 7 segment display
-    bcd2segment dec0 (.segment(L3_segment1), .num(di_Sones), .enable(dicDspSones));
-    bcd2segment dec1 (.segment(L3_segment2), .num(di_Stens), .enable(dicDspStens));
-    bcd2segment dec2 (.segment(L3_segment3), .num(di_Mones), .enable(dicDspMones));
-    bcd2segment dec3 (.segment(L3_segment4), .num(di_Mtens), .enable(dicDspMtens));
+    bcd2segment dec0 (.segment(L3_segment1), .num(di_Sones), .enable(dspSones));
+    bcd2segment dec1 (.segment(L3_segment2), .num(di_Stens), .enable(dspStens));
+    bcd2segment dec2 (.segment(L3_segment3), .num(di_Mones), .enable(dspMones));
+    bcd2segment dec3 (.segment(L3_segment4), .num(di_Mtens), .enable(dspMtens));
 
     wire [7:0] b1 = (alarm_ena | alarmDspMtens)? {4'b0011, alarm_10m} : "-";
     wire [7:0] b2 = (alarm_ena | alarmDspMones)? {4'b0011, alarm_1m} : "-";
@@ -167,8 +182,6 @@ module Lab3_140L (
     wire [7:0] b4 = (alarm_ena | alarmDspStens)? {4'b0011, alarm_10s} : "-";
     wire [7:0] b5 = (alarm_ena | alarmDspSones)? {4'b0011, alarm_1s} : "-";
     wire [7:0] b6 = (trig)? "T": (alarm_ena)? "@" : "-";
-
-    assign trig = (alarm_ena) & ~|(alarm_10m ^ di_Mtens) & ~|(alarm_1m ^ di_Mones) & ~|(alarm_10s ^ di_Stens) & ~|(alarm_1s ^ di_Sones);
 
     dispString dspStr (
 		  .rdy(L3_tx_data_rdy)
