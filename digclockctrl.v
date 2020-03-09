@@ -47,7 +47,12 @@ module dictrl(
 	input 	  clk
     );
 	
+    wire   det_num;
+    wire   det_num0to5;
     wire   det_cr;
+    wire   det_atSign;
+    wire   det_A;
+    wire   det_L;
     wire   det_S;
    
     // added outputs for momre states
