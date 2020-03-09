@@ -31,7 +31,7 @@ module didp (
 	    input 	     clk 	  
 	);
 
-    assign o_oneSecPluse = i_oneSecPluse & dicRun;
+    assign o_oneSecPluse = i_oneSecPluse | ~(dicRun);
     wire clkSecStrb = i_oneSecStrb & dicRun;
 
     //(dp.1) change this line and add code to set 3 more wires: StensIs5, MonesIs9, MtensIs5
