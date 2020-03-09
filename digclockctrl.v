@@ -47,6 +47,8 @@ module dictrl(
 	output 	  alarmDspMones,
 	output 	  alarmDspStens,
 	output 	  alarmDspSones,
+
+	output	  valid_num,
 		
         input 	    rx_data_rdy,// new data from uart rdy
         input [7:0] rx_data,    // new data from uart
@@ -90,6 +92,8 @@ module dictrl(
 
 	    .dicLdMtens(dicLdMtens), .dicLdMones(dicLdMones),
 	    .dicLdStens(dicLdStens), .dicLdSones(dicLdSones),
+
+	    .valid_num(valid_num),
 
 	    .det_num(det_num),
             .det_num0to5(det_num0to5),
