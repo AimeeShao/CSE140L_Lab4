@@ -64,18 +64,27 @@ module decodeKeys(
    assign det_esc = ~|(charData ^ 8'd27) & charDataValid;
 
    // 0-5
-   assign det_num0to5 = 1'b0 & charDataValid;
+   assign det_num0to5 = (~|(charData ^ "0") |
+			 ~|(charData ^ "1") |
+			 ~|(charData ^ "2") |
+			 ~|(charData ^ "3") |
+			 ~|(charData ^ "4") |
+			 ~|(charData ^ "5")) & 
+			 charDataValid;
    
    // 0-9
-   assign det_num = 1'b0 &  charDataValid;      
+   assign det_num = (~|((charData | 8'b0000_0111) ^ "7") | 
+		     ~|(charData ^ "8") |
+		     ~|(charData ^ "9")) &
+		     charDataValid;      
 
    assign det_cr = ~|(charData ^ 8'd13) & charDataValid;
 
    // "A/a" = 41/61
-   assign det_A = (charData == "a") & charDataValid;
+   assign det_A = ~|((charData | 8'b0010_0000) ^ "a") & charDataValid;
    
    // "L/l" = 4C/6C
-   assign det_L = (charData == "l") & charDataValid;
+   assign det_L = ~|((charData | 8'b0010_0000) ^ "l") & charDataValid;
 
    // "N/n" = 4E/6E
    assign det_N = ~|((charData | 8'b0010_0000) ^ "n") & charDataValid;
@@ -84,6 +93,6 @@ module decodeKeys(
    assign det_S = ~|((charData | 8'b0010_0000) ^ "s") & charDataValid;
 
    // "@" = 40
-   assign det_atSign = (charData == "@") & charDataValid;
+   assign det_atSign = ~|(charData ^ "@") & charDataValid;
    
 endmodule
