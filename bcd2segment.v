@@ -106,7 +106,6 @@ module bcd2segment (
 			~|(num ^ 4'd5) |
 			~|(num ^ 4'd6) |
 			~|(num ^ 4'd8) |
-			~|(num ^ 4'd9) |
 			~|(num ^ 4'd11) |
 			~|(num ^ 4'd12) |
 			~|(num ^ 4'd13) |
