@@ -4,6 +4,12 @@ module didp (
 	    output [3:0] di_iMones,  // current 1's minutes
 	    output [3:0] di_iStens,  // current 10's second
 	    output [3:0] di_iSones,  // current 1's second
+
+	    output [3:0] alarm_10m,  // current alarms 10's minutes
+	    output [3:0] alarm_1m,  // current alarms 1's minutes
+	    output [3:0] alarm_10s,  // current alarms 10's second
+	    output [3:0] alarm_1s,  // current alarms 1's second
+
             output       o_oneSecPluse,
             output [4:0] L3_led,     // LED Output
 
@@ -13,7 +19,7 @@ module didp (
             input        ldStens,
             input        ldSones,
 	    input [3:0]  ld_num,
-		
+
             input        dicSelectLEDdisp,
 	    input 	     dicRun,      // 1: clock should run, 0: clock freeze	
             input        i_oneSecPluse, // 0.5 sec on, 0.5 sec off		

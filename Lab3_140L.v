@@ -89,10 +89,10 @@ module Lab3_140L (
 	    .dicDspMones(dicDspMones),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspStens(dicDspStens),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspSones(dicDspSones),   // 1: update 7 segment; 0: freeze 7 segment display
-        .dicLdMtens(dicLdMtens),
-        .dicLdMones(dicLdMones),
-        .dicLdStens(dicLdStens),
-        .dicLdSones(dicLdSones),	
+	    .dicLdMtens(ld_Mtens),
+	    .dicLdMones(ld_Mones),
+	    .dicLdStens(ld_Stens),
+	    .dicLdSones(ld_Sones),
 		
         .rx_data_rdy(rx_data_rdy),// new data from uart rdy
         .rx_data(rx_data),        // new data from uart
@@ -100,12 +100,24 @@ module Lab3_140L (
 	    .clk(clk)
     );
 
+   assign dicLdMtens = ld_Mtens & rx_data_rdy;
+   assign dicLdMones = ld_Mones & rx_data_rdy;
+   assign dicLdStens = ld_Stens & rx_data_rdy;
+   assign dicLdSones = ld_Sones & rx_data_rdy;
+
    didp didpuu0(
         // output
 	    .di_iMtens(di_Mtens), // current 10's minutes
 	    .di_iMones(di_Mones), // current 1's minutes
 	    .di_iStens(di_Stens), // current 10's second
 	    .di_iSones(di_Sones), // current 1's second
+
+	// alarm output
+	    .alarm_10m(alarm_10m), // current alarm 10's minutes
+	    .alarm_1m(alarm_1m), // current alarm 1's minutes
+	    .alarm_10s(alarm_10s), // current alarm 10's seconds
+	    .alarm_1s(alarm_1s), // current alarm 1's seconds
+	  
         .o_oneSecPluse(oneSecPluse),
         .L3_led(L3_led),
 		
@@ -130,16 +142,25 @@ module Lab3_140L (
     bcd2segment dec2 (.segment(L3_segment3), .num(di_Mones), .enable(dicDspMones));
     bcd2segment dec3 (.segment(L3_segment4), .num(di_Mtens), .enable(dicDspMtens));
 
+    wire [7:0] b1 = (alarm_ena)? alarm_10m: "-";
+    wire [7:0] b2 = (alarm_ena)? alarm_1m: "-";
+    wire [7:0] b3 = (alarm_ena)? ":": "-";
+    wire [7:0] b4 = (alarm_ena)? alarm_10s: "-";
+    wire [7:0] b5 = (alarm_ena)? alarm_1s: "-";
+    wire [7:0] b6 = (trig)? "T": (alarm_ena)? "@" : "-";
+
+    assign trig = (alarm_ena) & ~|(alarm_10m ^ di_Mtens) & ~|(alarm_1m ^ di_Mones) & ~|(alarm_10s ^ di_Stens) & ~|(alarm_1s ^ di_Sones);
+
     dispString dspStr (
 		  .rdy(L3_tx_data_rdy)
         , .dOut(L3_tx_data)
-		, .b0("L") 
-		, .b1("A")
-		, .b2("B")
-		, .b3("3")
-		, .b4(":") 
-		, .b5(rx_data)
-		, .b6(8'h0d)
+		, .b0("A") 
+		, .b1(b1)
+		, .b2(b2)
+		, .b3(b3)
+		, .b4(b4) 
+		, .b5(b5)
+		, .b6(b6)
 		, .b7(8'h0d)
 		, .go(l_oneSecStrb)	
 		, .rst(rst)
