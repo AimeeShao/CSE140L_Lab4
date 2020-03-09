@@ -83,20 +83,29 @@ module Lab3_140L (
     wire alarm_ena, ld_time, ld_alarm;
     wire dicDspMtens, dicDspMones, dicDspStens, dicDspSones; //1:display, 0: don't display
     wire dicLdMtens, dicLdMones, dicLdStens, dicLdSones;     //1:load clk digit, 0: don't load
+    wire alarmDspMtens, alarmDspMones, alarmDspStens, alarmDspSones; //1:display, 0: don't display
+
     dictrl dictrluu0(
         .dicSelectLEDdisp(dicSelectLEDdisp),
 	    .dicRun(dicRun),             // clock should run
 	    .alarm_ena(alarm_ena),	 // alarm should be on
 	    .ld_time(ld_time),		 // loading time
 	    .ld_alarm(ld_alarm),	 // loading alarm
+
 	    .dicDspMtens(dicDspMtens),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspMones(dicDspMones),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspStens(dicDspStens),   // 1: update 7 segment; 0: freeze 7 segment display
 	    .dicDspSones(dicDspSones),   // 1: update 7 segment; 0: freeze 7 segment display
+
 	    .dicLdMtens(ld_Mtens),
 	    .dicLdMones(ld_Mones),
 	    .dicLdStens(ld_Stens),
 	    .dicLdSones(ld_Sones),
+
+	    .alarmDspMtens(alarmDspMtens),
+	    .alarmDspMones(alarmDspMones),
+	    .alarmDspStens(alarmDspStens),
+	    .alarmDspSones(alarmDspSones),
 		
         .rx_data_rdy(rx_data_rdy),// new data from uart rdy
         .rx_data(rx_data),        // new data from uart
