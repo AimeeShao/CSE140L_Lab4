@@ -64,14 +64,14 @@ module dicClockFsm (
     //  STOP: dicRun = 0; dicDspMtens = 1; dicDspMones = 1; dicDspStens = 1; dicDspSones= 1;
     localparam
     STOP    =1'b0, 
-    RUN     =1'b1;
-    OFF	    =1'b0;
-    ON	    =1'b1;
+    RUN     =1'b1,
+    OFF	    =1'b0,
+    ON	    =1'b1,
 
     // adding local params for loading T and A states
-    MTENS = 2'b00;
-    MONES = 2'b01;
-    STENS = 2'b10;
+    MTENS = 2'b00,
+    MONES = 2'b01,
+    STENS = 2'b10,
     SONES = 2'b11;   
    
     //
@@ -92,11 +92,11 @@ module dicClockFsm (
 		ld_alarm = OFF;
 		ld_time = OFF;
 	end else begin
-	if (det_atSign) // trigger alarm
+	   if (det_atSign) // trigger alarm
 		alarm_ena = (alarm_ena)? OFF: ON;
 
-	// other triggers
-	if (ld_time | ld_alarm) begin // loading time or loading alarm triggered
+	   // other triggers
+	   if (ld_time | ld_alarm) begin // loading time or loading alarm triggered
 		case (setTA_cState) // increment count and set ld if valid num
 		   MTENS: begin
 			dicLdMtens = (det_num0to5)? ON: OFF; 
@@ -127,20 +127,20 @@ module dicClockFsm (
 			setTA_nState = MTENS;
 		   end
 		endcase
-	end else if (det_L) begin // set ld_time
+	   end else if (det_L) begin // set ld_time
 		ld_time = ON;
 		ld_alarm = OFF;
 		setTA_nState = MTENS;
-	end else if (det_A) begin // set ld_alarm
+	   end else if (det_A) begin // set ld_alarm
 		ld_alarm = ON;
 		ld_time = OFF;
 		setTA_nState = MTENS;
-	end else begin
+	   end else begin
         	case (cState) // if running and CR, then stop. if stopped and S/s, then run.
 	           RUN: nState = (det_cr) ? STOP : RUN;
 		   STOP: nState = (det_S) ? RUN : STOP;
 		endcase
-	end
+	   end
 	end
     end
 

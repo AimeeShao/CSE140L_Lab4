@@ -126,8 +126,8 @@ module Lab3_140L (
         .L3_led(L3_led),
 		
 		//loading clock or alarm
-	.ld_time(ld_time);
-	.ld_alarm(ld_alarm);
+	.ld_time(ld_time),
+	.ld_alarm(ld_alarm),
         .ldMtens(dicLdMtens),
         .ldMones(dicLdMones),
         .ldStens(dicLdStens),
