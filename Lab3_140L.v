@@ -84,6 +84,7 @@ module Lab3_140L (
     wire dicDspMtens, dicDspMones, dicDspStens, dicDspSones; //1:display, 0: don't display
     wire dicLdMtens, dicLdMones, dicLdStens, dicLdSones;     //1:load clk digit, 0: don't load
     wire alarmDspMtens, alarmDspMones, alarmDspStens, alarmDspSones; //1:display, 0: don't display
+    wire valid_num; // we should load/show number
     wire [3:0] alarm_10m;
     wire [3:0] alarm_1m;
     wire [3:0] alarm_10s;
@@ -110,6 +111,8 @@ module Lab3_140L (
 	    .alarmDspMones(alarmDspMones),
 	    .alarmDspStens(alarmDspStens),
 	    .alarmDspSones(alarmDspSones),
+
+	    .valid_num(valid_num), // we should load/show number
 		
         .rx_data_rdy(rx_data_rdy),// new data from uart rdy
         .rx_data(rx_data),        // new data from uart
@@ -151,6 +154,7 @@ module Lab3_140L (
         .ldMones(dicLdMones),
         .ldStens(dicLdStens),
         .ldSones(dicLdSones),
+	.valid_num(valid_num),
 	    .ld_num(rx_data[3:0]), 
 		
 		// load trig

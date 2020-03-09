@@ -20,8 +20,10 @@ module didp (
             input        ldMones,
             input        ldStens,
             input        ldSones,
+	    input	 valid_num,
 	    input [3:0]  ld_num,
 
+	    input	 trig,
 
             input        dicSelectLEDdisp,
 	    input 	     dicRun,      // 1: clock should run, 0: clock freeze	
@@ -61,10 +63,10 @@ module didp (
  
     //(dp.4) add code to set sTensDin, mOnesDin, mTensDin
     //   0% of points assigned to Lab3, used in Lab4
-    wire [3:0] sOnesDin = ldSones ? ld_num : 4'b0;
-    wire [3:0] sTensDin = ldStens ? ld_num : 4'b0;
-    wire [3:0] mOnesDin = ldMones ? ld_num : 4'b0;
-    wire [3:0] mTensDin = ldMtens ? ld_num : 4'b0;
+    wire [3:0] sOnesDin = (ldSones & valid_num) ? ld_num : 4'b0;
+    wire [3:0] sTensDin = (ldStens & valid_num) ? ld_num : 4'b0;
+    wire [3:0] mOnesDin = (ldMones & valid_num) ? ld_num : 4'b0;
+    wire [3:0] mTensDin = (ldMtens & valid_num) ? ld_num : 4'b0;
    		
     //(dp.5) add code to generate digital clock output: di_iStens, di_iMones di_iMtens 
     //   20% of points assigned to Lab3
@@ -85,19 +87,19 @@ module didp (
                         .ld(rollMtens|(ld_time & ldMtens)),
 			.ce(countEnMtens|(ld_time & ldMtens)), 
                         .rst(rst),              .clk(clk));
-
+    
     // load alarm. reset -> all = 0, else depends on load
     always @(*) begin
 	if (rst) begin
-	   alarm_10m = 4'b0;
-	   alarm_1m = 4'b0;
-	   alarm_10s = 4'b0;
-	   alarm_1s = 4'b0;
+	   alarm_10m <= 4'b0;
+	   alarm_1m <= 4'b0;
+	   alarm_10s <= 4'b0;
+	   alarm_1s <= 4'b0;
 	end else begin
-	   alarm_10m = (ld_alarm & ldMtens)? ld_num: alarm_10m;
-	   alarm_1m = (ld_alarm & ldMones)? ld_num: alarm_1m;
-	   alarm_10s = (ld_alarm & ldStens)? ld_num: alarm_10s;
-	   alarm_1s = (ld_alarm & ldSones)? ld_num: alarm_1s;
+	   alarm_10m <= (ld_alarm & ldMtens & valid_num)? ld_num: alarm_10m;
+	   alarm_1m <= (ld_alarm & ldMones & valid_num)? ld_num: alarm_1m;
+	   alarm_10s <= (ld_alarm & ldStens & valid_num)? ld_num: alarm_10s;
+	   alarm_1s <= (ld_alarm & ldSones & valid_num)? ld_num: alarm_1s;
 	end
     end
 
@@ -108,6 +110,8 @@ module didp (
         .di_Stens(di_iStens),
         .di_Sones(di_iSones),
         .dicSelectLEDdisp(dicSelectLEDdisp),
+	.dicRun(dicRun),
+	.trig(trig),
         .oneSecPluse(o_oneSecPluse),
         .rst(rst),
         .clk(clk)
@@ -128,6 +132,8 @@ module ledDisplay (
         input [3:0] di_Stens,
         input [3:0] di_Sones,
         input  dicSelectLEDdisp, //1: LED is move to display the next digit of clk 
+	input  dicRun,
+	input  trig,
         input  oneSecPluse,
         input  rst,
         input  clk
@@ -154,10 +160,12 @@ module ledDisplay (
         end
     end
 
-    assign L3_led = 
-        (selLed == 2'b00) ? {oneSecPluse, di_Sones} :
-        (selLed == 2'b01) ? {oneSecPluse, di_Stens} :
-        (selLed == 2'b10) ? {oneSecPluse, di_Mones} :
+    assign L3_led = (trig) ? 
+	(dicRun) ? (oneSecPluse) ? 5'b11111 : 5'b0 :
+	5'b11111 :
+        ~|(selLed ^ 2'b00) ? {oneSecPluse, di_Sones} :
+        ~|(selLed ^ 2'b01) ? {oneSecPluse, di_Stens} :
+        ~|(selLed ^ 2'b10) ? {oneSecPluse, di_Mones} :
         {oneSecPluse, di_Mtens};
 
 endmodule

@@ -49,6 +49,8 @@ module dicClockFsm (
 		output reg alarmDspStens,
 		output reg alarmDspSones,
 
+		output reg valid_num, // if we should show the number or not
+
         input      det_num,    // 0-9 detected
         input      det_num0to5, // 0-5 detected
         input      det_cr,
@@ -187,6 +189,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 1;
 		ld_alarm = 0;
+		valid_num = det_num0to5;
 	    end
 	    LT_1M: begin 
 		dicDspMtens = 1;
@@ -199,6 +202,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 1;
 		ld_alarm = 0;
+		valid_num = det_num;
 	    end
 	    LT_10S: begin
 		dicDspMtens = 1;
@@ -211,6 +215,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 1;
 		ld_alarm = 0;
+		valid_num = det_num0to5;
 	    end
 	    LT_1S: begin
 		dicDspMtens = 1;
@@ -223,6 +228,7 @@ module dicClockFsm (
 		dicLdSones = 1;
 		ld_time = 1;
 		ld_alarm = 0;
+		valid_num = det_num;
 	    end
 
 	    // load alarm, affects alarm display
@@ -237,6 +243,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 0;
 		ld_alarm = 1;
+		valid_num = det_num0to5;
 	    end
 	    LA_1M: begin 
 		alarmDspMtens = 1;
@@ -249,6 +256,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 0;
 		ld_alarm = 1;
+		valid_num = det_num;
 	    end
 	    LA_10S: begin
 		alarmDspMtens = 1;
@@ -261,6 +269,7 @@ module dicClockFsm (
 		dicLdSones = 0;
 		ld_time = 0;
 		ld_alarm = 1;
+		valid_num = det_num0to5;
 	    end
 	    LA_1S: begin
 		alarmDspMtens = 1;
@@ -273,6 +282,7 @@ module dicClockFsm (
 		dicLdSones = 1;
 		ld_time = 0;
 		ld_alarm = 1;
+		valid_num = det_num;
 	    end
 
 	    WAIT: begin
