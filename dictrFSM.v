@@ -48,6 +48,7 @@ module dicClockFsm (
 		output reg alarmDspMones,
 		output reg alarmDspStens,
 		output reg alarmDspSones,
+
         input      det_num,    // 0-9 detected
         input      det_num0to5, // 0-5 detected
         input      det_cr,

@@ -32,14 +32,21 @@ module dictrl(
 	output	  alarm_ena,	    // should see alarm
 	output 	  ld_time,	    // should be loading time
 	output	  ld_alarm,	    // should be loading alarm
+
 	output 	  dicDspMtens,
 	output 	  dicDspMones,
 	output 	  dicDspStens,
 	output 	  dicDspSones,
+
         output    dicLdMtens,
         output    dicLdMones,
         output    dicLdStens,
         output    dicLdSones,
+
+	output 	  alarmDspMtens,
+	output 	  alarmDspMones,
+	output 	  alarmDspStens,
+	output 	  alarmDspSones,
 		
         input 	    rx_data_rdy,// new data from uart rdy
         input [7:0] rx_data,    // new data from uart
