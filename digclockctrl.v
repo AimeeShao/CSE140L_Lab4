@@ -29,6 +29,9 @@
 module dictrl(
         output    dicSelectLEDdisp, //select LED
 	output 	  dicRun,           // clock should run
+	output	  alarm_ena,	    // should see alarm
+	output 	  ld_time,	    // should be loading time
+	output	  ld_alarm,	    // should be loading alarm
 	output 	  dicDspMtens,
 	output 	  dicDspMones,
 	output 	  dicDspStens,
@@ -63,6 +66,9 @@ module dictrl(
     // added inputs for more states and output ldT
     dicClockFsm dicfsm (
             .dicRun(dicRun),
+	    .alarm_ena(alarm_ena),
+	    .ld_time(ld_time),
+	    .ld_alarm(ld_alarm),
             .dicDspMtens(dicDspMtens), .dicDspMones(dicDspMones),
             .dicDspStens(dicDspStens), .dicDspSones(dicDspSones),
 	    .dicLdMtens(dicLdMtens), .dicLdMones(dicLdMones),
