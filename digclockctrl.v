@@ -43,10 +43,6 @@ module dictrl(
         input 	  rst,
 	input 	  clk
     );
-    assign dicLdMtens = 1'b0;
-    assign dicLdMones = 1'b0;
-    assign dicLdStens = 1'b0;
-    assign dicLdSones = 1'b0;
 	
     wire   det_cr;
     wire   det_S;
@@ -64,12 +60,14 @@ module dictrl(
 	.charData(rx_data),      .charDataValid(rx_data_rdy)
     );
 
-    // added inputs for more states
+    // added inputs for more states and output ldT
     dicClockFsm dicfsm (
             .dicRun(dicRun),
             .dicDspMtens(dicDspMtens), .dicDspMones(dicDspMones),
             .dicDspStens(dicDspStens), .dicDspSones(dicDspSones),
-            .det_num(det_num),
+	    .dicLdMtens(dicLdMtens), .dicLdMones(dicLdMones),
+	    .dicLdStens(dicLdStens), .dicLdSones(dicLdSones),
+	    .det_num(det_num),
             .det_num0to5(det_num0to5),
             .det_cr(det_cr),
             .det_atSign(det_atSign),
