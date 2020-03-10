@@ -294,14 +294,6 @@ module dicClockFsm (
 		ld_alarm = 0;
 	    end
         endcase
-	
-	// change alarm display based on alarm_ena
-	if (alarm_ena) begin // all display on
-	    	alarmDspMtens = 1;
-	        alarmDspMones = 1;
-	        alarmDspStens = 1;
-	        alarmDspSones = 1;
-	end
    end
 
    always @(posedge clk) begin
