@@ -187,6 +187,14 @@ module Lab3_140L (
     wire [7:0] b5 = (alarm_ena | alarmDspSones)? {4'b0011, alarm_1s} : "-";
     wire [7:0] b6 = (trig)? "T": (alarm_ena)? "@" : "-";
 
+    // generate a strobe every 256 cycles of clk
+    wire delayStrb;
+    delayNclks #(8) delay(
+		.strob(delayStrb),
+		.rst(rst),
+		.clk(clk)
+    );
+	
     dispString dspStr (
 		  .rdy(L3_tx_data_rdy)
         , .dOut(L3_tx_data)
@@ -198,9 +206,36 @@ module Lab3_140L (
 		, .b5(b5)
 		, .b6(b6)
 		, .b7(8'h0d)
-		, .go(l_oneSecStrb)	
+//		, .go(l_oneSecStrb)	
+		, .go(delayStrb)
 		, .rst(rst)
 		, .clk(clk)
     );
 	
 endmodule // Lab2_140L
+
+module delayNclks(
+		  output reg 	   strob,
+		  input wire 	   rst,
+		  input wire 	   clk);
+
+	parameter WIDTH = 8;
+	reg  [WIDTH-1:0] count;
+	wire [WIDTH-1:0] count_next;   
+	defparam uu0.N = WIDTH;
+	N_bit_counter uu0(
+	   .result (count_next[WIDTH-1:0])       , // Output
+	   .r1 (count[WIDTH-1:0])                  , // input
+	   .up (1'b1)
+	);
+
+   always @(posedge clk) begin
+    if (rst)
+	   count <= {WIDTH{1'b0}};
+    else begin
+	   count <= count_next;
+    end
+    strob <= &count;
+   end
+   
+endmodule // dispString
